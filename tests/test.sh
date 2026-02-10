@@ -1,3 +1,9 @@
+sh '''
+  chmod +x tests/test.sh
+  ./tests/test.sh
+'''
+
+
 #!/bin/bash
 echo "Running tests on $(hostname)"
 
