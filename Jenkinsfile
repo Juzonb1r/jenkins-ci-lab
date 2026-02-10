@@ -1,51 +1,35 @@
 pipeline {
-    agent none   // IMPORTANT: controller does NOT run jobs
+  agent none
 
-    options {
-        timestamps()
-        disableConcurrentBuilds()
+  options { timestamps(); disableConcurrentBuilds() }
+
+  stages {
+    stage('Checkout') {
+      agent any
+      steps {
+        checkout([$class: 'GitSCM',
+          branches: [[name: '*/main']],
+          userRemoteConfigs: [[url: 'https://github.com/Juzonb1r/jenkins-ci-lab.git']]
+        ])
+      }
+      post { always { cleanWs() } }
     }
 
-    stages {
-
-        stage('Checkout') {
-            agent any
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/Juzonb1r/jenkins-ci-lab.git'
-            }
-        }
-
-        stage('Build on mac-agent') {
-            agent { label 'jim' }
-            steps {
-                sh '''
-                  echo "Build stage"
-                  ./app/app.sh
-                '''
-            }
-        }
-
-        stage('Test on node-mac1') {
-            agent { label 'node-mac1' }
-            steps {
-                sh '''
-                  echo "Test stage"
-                  ./tests/test.sh
-                '''
-            }
-        }
+    stage('Build on app') {
+      agent { label 'jim' }
+      steps { sh './app/app.sh' }
+      post { always { cleanWs() } }
     }
 
-    post {
-        success {
-            echo "Pipeline SUCCESS"
-        }
-        failure {
-            echo "Pipeline FAILED"
-        }
-        always {
-            cleanWs()
-        }
+    stage('Test on test') {
+      agent { label 'node-mac1' }
+      steps { sh './tests/test.sh' }
+      post { always { cleanWs() } }
     }
+  }
+
+  post {
+    success { echo "Pipeline SUCCESS" }
+    failure { echo "Pipeline FAILED" }
+  }
 }
