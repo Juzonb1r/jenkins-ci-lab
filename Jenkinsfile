@@ -12,12 +12,12 @@ pipeline {
             agent any
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/YOUR_ORG/jenkins-ci-lab.git'
+                    url: 'https://github.com/Juzonb1r/jenkins-ci-lab.git'
             }
         }
 
         stage('Build on mac-agent') {
-            agent { label 'mac-agent' }
+            agent { label 'jim' }
             steps {
                 sh '''
                   echo "Build stage"
