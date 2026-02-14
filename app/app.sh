@@ -4,5 +4,5 @@ sh '''
 '''
 
 #!/bin/bash
-echo "Application running on $(hostname)"
+echo "Application running on Jim $(hostname)"
 sleep 3
